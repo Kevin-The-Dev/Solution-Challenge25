@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 16rem;
+            background: linear-gradient(135deg, #6B46C1, #4c1d95);
+            color: white;
+            overflow-y: auto;
+            scrollbar-width: none;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar img {
+            height: 3rem;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .sidebar ul {
+            margin-top: 1.5rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            margin: 0 0.5rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background-color: #ffffff;
+            color: #6B46C1;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-item a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            color: inherit;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-item i {
+            margin-right: 0.75rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f7fafc;
+            color: #1f2937;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(107, 70, 193, 0.9), rgba(167, 139, 250, 0.9));
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .header .search-bar {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            width: 300px;
+        }
+
+        .header .search-bar:hover,
+        .header .search-bar:focus-within {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .header .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .header .search-bar input::placeholder {
+            color: #e2e8f0;
+        }
+
+        .lesson-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .lesson-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-card p {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+        .lesson-card .status {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .lesson-card .status.completed {
+            color: #10B981;
+        }
+
+        .lesson-card .status.in-progress {
+            color: #F59E0B;
+        }
+
+        .lesson-card .status.not-started {
+            color: #6B7280;
+        }
+
+        .lesson-card .status i {
+            margin-right: 0.5rem;
+        }
+
+        .lesson-card .view-lesson {
+            padding: 0.5rem 1rem;
+            background-color: #6B46C1;
+            color: white;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .lesson-card .view-lesson:hover {
+            background-color: #4c1d95;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filter-dropdown {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-dropdown select {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            font-size: 1rem;
+            color: #4a5568;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-dropdown select:hover {
+            border-color: #6B46C1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+  <!-- Sidebar -->
+  <aside class="sidebar p-5">
+    <img src="/Img/icons/cataylyst.png" alt="Catalyst Logo">
+    <ul class="space-y-3">
+        <li class="sidebar-item ">
+            <a href="student_db.html">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="student_db.html">
+                <i class="fas fa-book"></i>
+                <span>Subjects</span>
+            </a>
+        </li>
+        <li class="sidebar-item active">
+            <a href="lessons.html">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Lessons</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="assessments.html">
+                <i class="fas fa-tasks"></i>
+                <span>Assessments</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="challenges.html">
+                <i class="fas fa-star"></i>
+                <span>Challenges</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="support.html">
+                <i class="fas fa-question-circle"></i>
+                <span>Support</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="upload.html">
+                <i class="fas fa-upload"></i>
+                <span>Uploads</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="download.html">
+                <i class="fas fa-download"></i>
+                <span>Download</span>
+            </a>
+        </li>
+        <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center" >
+            <a href="../index.html" class="flex items-center w-full">
+                <i class="fas fa-sign-out-alt mr-2" style="padding-left : 9px;"></i>
+                <span style="padding-left : 9px;">Sign Out</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search text-white mr-2"></i>
+                    <input type="text" id="searchInput" placeholder="Search Lessons..." aria-label="Search lessons">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button aria-label="Toggle Theme" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button aria-label="Notifications" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button aria-label="Settings" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div>
+                <h2 class="text-3xl font-bold mb-6 text-gray-800" id="subjectTitle">Lessons</h2>
+
+                <!-- Filter Dropdown -->
+                <div class="filter-dropdown">
+                    <select id="statusFilter">
+                        <option value="all">All Lessons</option>
+                        <option value="completed">Completed</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="not-started">Not Started</option>
+                    </select>
+                </div>
+
+                <!-- Lessons List -->
+                <div id="lessonsList">
+                    <!-- Lessons will be dynamically populated here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sample lesson data for each subject
+        const lessonsData = {
+            python: [
+                { title: "Introduction to Python", status: "completed", link: "#" },
+                { title: "Variables and Data Types", status: "completed", link: "#" },
+                { title: "Control Structures", status: "in-progress", link: "#" },
+                { title: "Functions", status: "not-started", link: "#" },
+                { title: "Object-Oriented Programming", status: "not-started", link: "#" }
+            ],
+            java: [
+                { title: "Java Basics", status: "completed", link: "#" },
+                { title: "Arrays and Lists", status: "in-progress", link: "#" },
+                { title: "Sorting Algorithms", status: "not-started", link: "#" },
+                { title: "Graphs and Trees", status: "not-started", link: "#" }
+            ],
+            react: [
+                { title: "React Fundamentals", status: "completed", link: "#" },
+                { title: "Components and Props", status: "completed", link: "#" },
+                { title: "State and Hooks", status: "in-progress", link: "#" },
+                { title: "Routing in React", status: "not-started", link: "#" }
+            ],
+            flutter: [
+                { title: "Flutter Setup", status: "completed", link: "#" },
+                { title: "Widgets Basics", status: "in-progress", link: "#" },
+                { title: "State Management", status: "not-started", link: "#" },
+                { title: "Navigation", status: "not-started", link: "#" }
+            ],
+            mysql: [
+                { title: "SQL Basics", status: "completed", link: "#" },
+                { title: "Creating Tables", status: "completed", link: "#" },
+                { title: "Joins and Queries", status: "in-progress", link: "#" },
+                { title: "Indexing", status: "not-started", link: "#" }
+            ],
+            aws: [
+                { title: "AWS Overview", status: "completed", link: "#" },
+                { title: "EC2 Instances", status: "in-progress", link: "#" },
+                { title: "S3 Storage", status: "not-started", link: "#" },
+                { title: "Lambda Functions", status: "not-started", link: "#" }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get subject from URL query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject')?.toLowerCase() || 'python'; // Default to Python if no subject
+
+            // Update subject title
+            const subjectTitle = document.getElementById('subjectTitle');
+            subjectTitle.textContent = `Lessons - ${subject.charAt(0).toUpperCase() + subject.slice(1)}`;
+
+            // Populate lessons
+            const lessonsList = document.getElementById('lessonsList');
+            const lessons = lessonsData[subject] || [];
+            if (lessons.length === 0) {
+                lessonsList.innerHTML = '<p class="text-gray-500">No lessons available for this subject.</p>';
+                return;
+            }
+
+            const renderLessons = (filterStatus = 'all') => {
+                lessonsList.innerHTML = '';
+                lessons.forEach((lesson, index) => {
+                    if (filterStatus === 'all' || lesson.status === filterStatus) {
+                        const lessonCard = document.createElement('div');
+                        lessonCard.className = 'lesson-card';
+                        lessonCard.style.animationDelay = `${index * 0.1}s`; // Staggered animation
+                        lessonCard.innerHTML = `
+                            <div>
+                                <h3>${lesson.title}</h3>
+                                <p class="status ${lesson.status}">
+                                    <i class="${lesson.status === 'completed' ? 'fas fa-check-circle' : lesson.status === 'in-progress' ? 'fas fa-spinner' : 'far fa-circle'}"></i>
+                                    ${lesson.status.replace('-', ' ').charAt(0).toUpperCase() + lesson.status.slice(1).replace('-', ' ')}
+                                </p>
+                            </div>
+                            <a href="${lesson.link}" class="view-lesson">View Lesson</a>
+                        `;
+                        lessonsList.appendChild(lessonCard);
+                    }
+                });
+            };
+
+            // Initial render
+            renderLessons();
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                const lessonCards = lessonsList.querySelectorAll('.lesson-card');
+                lessonCards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    if (title.includes(query)) {
+                        card.style.display = 'flex';
+                        card.style.animation = 'fadeIn 0.5s ease forwards';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Filter by status
+            const statusFilter = document.getElementById('statusFilter');
+            statusFilter.addEventListener('change', (e) => {
+                renderLessons(e.target.value);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .dark-mode {
+            background-color: #1a202c;
+            color: white;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .bg-gray-100 {
+            background-color: #1a202c;
+        }
+
+        .dark-mode .text-gray-700 {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .text-gray-600 {
+            color: #a0aec0;
+        }
+
+        .dark-mode .text-gray-500 {
+            color: #a0aec0;
+        }
+
+        .dark-mode .announcement-card {
+            background-color: #3c366b;
+        }
+
+        .dark-mode .message-card {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .document-card {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .document-item {
+            border-color: #4a5568;
+        }
+
+        .dark-mode .input-area {
+            background-color: #2d3748;
+        }
+
+        /* Staff Room specific styles */
+        .message-card,
+        .document-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .message-card:hover,
+        .document-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #6b46c1;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .announcement-card {
+            background-color: #e9d8fd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .announcement-card:hover {
+            transform: scale(1.02);
+        }
+
+        .announcement-title {
+            font-weight: bold;
+            color: #6b46c1;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s;
+        }
+
+        .document-item:hover {
+            background-color: #f7fafc;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-icon {
+            color: #6b46c1;
+            margin-right: 0.75rem;
+        }
+
+        .input-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f7fafc;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-wrapper input {
+            flex-grow: 1;
+        }
+
+        /* Toggle Switch */
+        .toggle-label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toggle-label input {
+            display: none;
+        }
+
+        .toggle-label .toggle {
+            width: 2.5rem;
+            height: 1.5rem;
+            background-color: #e2e8f0;
+            border-radius: 0.75rem;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+
+        .toggle-label .toggle::before {
+            content: '';
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: white;
+            border-radius: 50%;
+            top: 0.125rem;
+            left: 0.125rem;
+            transition: transform 0.2s;
+        }
+
+        .toggle-label input:checked+.toggle {
+            background-color: #6b46c1;
+        }
+
+        .toggle-label input:checked+.toggle::before {
+            transform: translateX(1rem);
+        }
+
+        /* Icon styles */
+        .section-icon {
+            color: #6b46c1;
+            margin-right: 0.5rem;
+        }
+
+        .announcement-icon {
+            color: #6b46c1;
+            margin-right: 0.5rem;
+        }
+
+        .message-icon {
+            color: #6b46c1;
+            margin-right: 0.5rem;
+        }
+
+        .action-icon {
+            margin-right: 0.5rem;
+        }
+
+        .clear-button {
+            color: #6b46c1;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            right: 1rem;
+            top: 1.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                position: fixed;
+                z-index: 10;
+            }
+
+            aside.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 0.5rem;
+            }
+
+            .message-card,
+            .announcement-card,
+            .document-card {
+                padding: 0.75rem;
+            }
+
+            .input-area {
+                padding: 0.75rem;
+            }
+
+            .staff-content {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+
+            .staff-content {
+                display: flex;
+                gap: 2rem;
+            }
+
+            .staff-content>section {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-200 min-h-screen p-5 transition-transform duration-300 ease-in-out" id="sidebar">
+            <img src="../../Img/icons/cataylyst.png" alt="Catalyst Logo" class="h-8 mb-5"
+                style="display: block; margin: 0 auto; height: 3rem;" aria-label="Catalyst Logo">
+            <ul class="mt-5 space-y-3">
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="teacher_db.html" class="flex items-center w-full">
+                        <i class="fas fa-home mr-2"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="students.html" class="flex items-center w-full">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="classes.html" class="flex items-center w-full">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        <span>Classes</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="support.html" class="flex items-center w-full">
+                        <i class="fas fa-question-circle mr-2"></i>
+                        <span>Support</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="chatbot.html" class="flex items-center w-full">
+                        <i class="fas fa-robot mr-2"></i>
+                        <span>Chatbot</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="settings.html" class="flex items-center w-full">
+                        <i class="fas fa-cog mr-2"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="bg-purple-400 text-white p-3 rounded-lg flex items-center">
+                    <a href="staff_room.html" class="flex items-center w-full">
+                        <i class="fas fa-comments mr-2"></i>
+                        <span>Staff Room</span>
+                    </a>
+                </li>
+                <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center">
+                    <a href="../index.html" class="flex items-center w-full">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 p-5 relative" id="main-content">
+            <header class="flex justify-between items-center mb-5">
+                <div class="flex items-center w-1/3 bg-white p-2 rounded">
+                    <i class="fas fa-search text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search Class, Documents, Activities..."
+                        class="p-1 border-none outline-none w-full" aria-label="Search">
+                </div>
+                <div class="flex items-center space-x-4" style="padding-right: 12px;">
+                    <i class="fas fa-sun text-gray-500"></i>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" id="darkModeToggle">
+                        <div
+                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600">
+                        </div>
+                    </label>
+                    <i class="fas fa-bell text-gray-500"></i>
+                    <i class="fas fa-cog text-gray-500"></i>
+                    <button class="menu-toggle text-gray-500 md:hidden" id="menu-toggle" aria-label="Toggle Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div>
+                <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-users section-icon"></i> Staff Room
+                </h2>
+                <p class="text-gray-600 mb-4">Welcome to the Staff Room! Share updates, messages, and documents with
+                    your colleagues.</p>
+
+                <div class="staff-content">
+                    <!-- Announcements -->
+                    <section class="mb-5">
+                        <h3 class="text-lg font-semibold mb-3 border-b border-gray-200 pb-2 flex items-center">
+                            <i class="fas fa-bullhorn section-icon"></i> Announcements
+                        </h3>
+                        <div class="announcement-card">
+                            <h4 class="announcement-title flex items-center">
+                                <i class="fas fa-exclamation-circle announcement-icon"></i> Upcoming Staff Meeting
+                            </h4>
+                            <p>Please note that there will be a mandatory staff meeting on December 15, 2023, at 10:00
+                                AM in the main hall.</p>
+                            <p class="message-time flex items-center">
+                                <i class="fas fa-clock mr-1"></i> Posted on December 10, 2023
+                            </p>
+                            <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                <i class="fas fa-thumbtack action-icon"></i> Pin
+                            </button>
+                        </div>
+                        <div class="announcement-card">
+                            <h4 class="announcement-title flex items-center">
+                                <i class="fas fa-exclamation-circle announcement-icon"></i> New Curriculum Training
+                            </h4>
+                            <p>Training sessions for the new curriculum will be held from January 5-7, 2024. Sign-up
+                                sheets are available in the office.</p>
+                            <p class="message-time flex items-center">
+                                <i class="fas fa-clock mr-1"></i> Posted on December 5, 2023
+                            </p>
+                            <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                <i class="fas fa-thumbtack action-icon"></i> Pin
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Staff Messages -->
+                    <section class="mb-5">
+                        <h3 class="text-lg font-semibold mb-3 border-b border-gray-200 pb-2 flex items-center">
+                            <i class="fas fa-comments section-icon"></i> Staff Messages
+                        </h3>
+                        <div class="message-card">
+                            <p class="flex items-center">
+                                <i class="fas fa-user message-icon"></i>
+                                <span class="message-sender">Mr. Smith:</span> Has anyone completed the student progress
+                                reports?
+                            </p>
+                            <p class="message-time flex items-center">
+                                <i class="fas fa-clock mr-1"></i> 10:30 AM
+                            </p>
+                            <div class="flex space-x-2">
+                                <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-reply action-icon"></i> Reply
+                                </button>
+                                <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-heart action-icon"></i> Like
+                                </button>
+                            </div>
+                        </div>
+                        <div class="message-card">
+                            <p class="flex items-center">
+                                <i class="fas fa-user message-icon"></i>
+                                <span class="message-sender">Ms. Johnson:</span> I have a question about the new grading
+                                policy. Can someone clarify?
+                            </p>
+                            <p class="message-time flex items-center">
+                                <i class="fas fa-clock mr-1"></i> 11:15 AM
+                            </p>
+                            <div class="flex space-x-2">
+                                <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-reply action-icon"></i> Reply
+                                </button>
+                                <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-heart action-icon"></i> Like
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-area">
+                            <div class="input-wrapper">
+                                <input type="text" id="message-input" placeholder="Type a new message..."
+                                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    aria-label="Type a new message">
+                                <button class="clear-button" id="clear-message-btn">
+                                    <i class="fas fa-times" style="padding-right: 10px;"></i>
+                                </button>
+                            </div>
+                            <button id="send-message-btn"
+                                class="mt-2 bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center">
+                                <i class="fas fa-paper-plane action-icon"></i> Send
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Shared Documents -->
+                <section>
+                    <h3 class="text-lg font-semibold mb-3 border-b border-gray-200 pb-2 flex items-center">
+                        <i class="fas fa-file-alt section-icon"></i> Shared Documents
+                        <button id="upload-document-btn"
+                            class="ml-auto text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                            <i class="fas fa-upload action-icon"></i> Upload
+                        </button>
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-md document-card">
+                        <div class="document-item">
+                            <i class="fas fa-file-pdf document-icon"></i>
+                            <span>School Calendar 2023-2024.pdf</span>
+                            <div class="ml-auto flex space-x-2">
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-download action-icon"></i> Download
+                                </a>
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-share-alt action-icon"></i> Share
+                                </a>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <i class="fas fa-file-word document-icon"></i>
+                            <span>New Grading Policy.docx</span>
+                            <div class="ml-auto flex space-x-2">
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-download action-icon"></i> Download
+                                </a>
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-share-alt action-icon"></i> Share
+                                </a>
+                            </div>
+                        </div>
+                        <div class="document-item">
+                            <i class="fas fa-file-excel document-icon"></i>
+                            <span>Student Contact List.xlsx</span>
+                            <div class="ml-auto flex space-x-2">
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-download action-icon"></i> Download
+                                </a>
+                                <a href="#" class="text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                                    <i class="fas fa-share-alt action-icon"></i> Share
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar toggle for mobile
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainContent = document.getElementById('main-content');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('ml-64', !sidebar.classList.contains('active'));
+        });
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function () {
+            document.body.classList.toggle('dark-mode', this.checked);
+            localStorage.setItem('darkMode', this.checked ? 'enabled' : 'disabled');
+        });
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+
+        // Message posting functionality
+        const messageInput = document.getElementById('message-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const clearMessageBtn = document.getElementById('clear-message-btn');
+        const messagesSection = document.querySelector('.message-card:last-child').parentElement;
+
+        sendMessageBtn.addEventListener('click', () => {
+            const text = messageInput.value.trim();
+            if (text) {
+                const messageCard = document.createElement('div');
+                messageCard.classList.add('message-card');
+                messageCard.innerHTML = `
+                    <p class="flex items-center">
+                        <i class="fas fa-user message-icon"></i>
+                        <span class="message-sender">You:</span> ${text}
+                    </p>
+                    <p class="message-time flex items-center">
+                        <i class="fas fa-clock mr-1"></i> ${new Date().toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </p>
+                    <div class="flex space-x-2">
+                        <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                            <i class="fas fa-reply action-icon"></i> Reply
+                        </button>
+                        <button class="mt-2 text-purple-600 hover:text-purple-800 text-sm flex items-center">
+                            <i class="fas fa-heart action-icon"></i> Like
+                        </button>
+                    </div>
+                `;
+                messagesSection.insertBefore(messageCard, messagesSection.lastElementChild);
+                messageInput.value = '';
+                messagesSection.scrollTop = messagesSection.scrollHeight;
+            }
+        });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessageBtn.click();
+            }
+        });
+
+        clearMessageBtn.addEventListener('click', () => {
+            messageInput.value = '';
+        });
+
+        // Placeholder for upload functionality
+        const uploadDocumentBtn = document.getElementById('upload-document-btn');
+        uploadDocumentBtn.addEventListener('click', () => {
+            alert('Upload functionality not implemented yet. Add file input and backend logic to enable this feature.');
+        });
+    </script>
+</body>
+
+</html>

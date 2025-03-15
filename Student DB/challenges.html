@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student's Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6;
+    }
+
+    .main-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 16rem;
+      background: linear-gradient(135deg, #6B46C1, #4c1d95);
+      color: white;
+      overflow-y: auto;
+      scrollbar-width: none;
+      transition: width 0.3s ease;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sidebar img {
+      height: 3rem;
+      margin: 1.5rem auto;
+      display: block;
+    }
+
+    .sidebar ul {
+      margin-top: 1.5rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sidebar-item {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      margin: 0 0.5rem;
+    }
+
+    .sidebar-item:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .sidebar-item.active {
+      background-color: #ffffff;
+      color: #6B46C1;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-item a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      color: inherit;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .sidebar-item i {
+      margin-right: 0.75rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      background-color: #f7fafc;
+      color: #1f2937;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(107, 70, 193, 0.9), rgba(167, 139, 250, 0.9));
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .header .search-bar {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      width: 300px;
+    }
+
+    .header .search-bar:hover,
+    .header .search-bar:focus-within {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .header .search-bar input {
+      background: none;
+      border: none;
+      color: white;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .header .search-bar input::placeholder {
+      color: #e2e8f0;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .filters label {
+      font-weight: 500;
+      color: #4a5568;
+    }
+
+    .filters select {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e0;
+      background-color: #fff;
+      color: #4a5568;
+      transition: border-color 0.3s ease;
+    }
+
+    .filters select:focus {
+      outline: none;
+      border-color: #6B46C1;
+      box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.2);
+    }
+
+    .challenge-card {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.5s ease forwards;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .challenge-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .challenge-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .challenge-card p {
+      color: #6B7280;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .challenge-card .difficulty {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .challenge-card .difficulty.easy {
+      background-color: #D1FAE5;
+      color: #10B981;
+    }
+
+    .challenge-card .difficulty.medium {
+      background-color: #FEF3C7;
+      color: #F59E0B;
+    }
+
+    .challenge-card .difficulty.hard {
+      background-color: #FEE2E2;
+      color: #EF4444;
+    }
+
+    .challenge-card .status {
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .challenge-card .status.available {
+      color: #3B82F6;
+    }
+
+    .challenge-card .status.in-progress {
+      color: #F59E0B;
+    }
+
+    .challenge-card .status.completed {
+      color: #10B981;
+    }
+
+    .challenge-card .status i {
+      margin-right: 0.5rem;
+    }
+
+    .challenge-card .action-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .challenge-card .action-btn.participate {
+      background-color: #6B46C1;
+      color: white;
+    }
+
+    .challenge-card .action-btn.participate:hover {
+      background-color: #4c1d95;
+    }
+
+    .challenge-card .action-btn.progress {
+      background-color: #F59E0B;
+      color: white;
+    }
+
+    .challenge-card .action-btn.progress:hover {
+      background-color: #D97706;
+    }
+
+    .challenge-card .action-btn.completed {
+      background-color: #10B981;
+      color: white;
+    }
+
+    .challenge-card .action-btn.completed:hover {
+      background-color: #059669;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+   <!-- Sidebar -->
+   <aside class="sidebar p-5">
+    <img src="/Img/icons/cataylyst.png" alt="Catalyst Logo">
+    <ul class="space-y-3">
+        <li class="sidebar-item ">
+            <a href="student_db.html">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="student_db.html">
+                <i class="fas fa-book"></i>
+                <span>Subjects</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="lessons.html">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Lessons</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="assessments.html">
+                <i class="fas fa-tasks"></i>
+                <span>Assessments</span>
+            </a>
+        </li>
+        <li class="sidebar-item active">
+            <a href="challenges.html">
+                <i class="fas fa-star"></i>
+                <span>Challenges</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="support.html">
+                <i class="fas fa-question-circle"></i>
+                <span>Support</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="upload.html">
+                <i class="fas fa-upload"></i>
+                <span>Uploads</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="download.html">
+                <i class="fas fa-download"></i>
+                <span>Download</span>
+            </a>
+        </li>
+        <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center" >
+            <a href="../index.html" class="flex items-center w-full">
+                <i class="fas fa-sign-out-alt mr-2" style="padding-left : 9px;"></i>
+                <span style="padding-left : 9px;">Sign Out</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="header">
+        <div class="search-bar">
+          <i class="fas fa-search text-white mr-2"></i>
+          <input type="text" id="searchInput" placeholder="Search Challenges..." aria-label="Search challenges">
+        </div>
+        <div class="flex items-center space-x-4">
+          <button aria-label="Toggle Theme" class="text-white text-xl hover:text-gray-200">
+            <i class="fas fa-sun"></i>
+          </button>
+          <button aria-label="Notifications" class="text-white text-xl hover:text-gray-200">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button aria-label="Settings" class="text-white text-xl hover:text-gray-200">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </header>
+
+      <div>
+        <h2 class="text-3xl font-bold mb-6 text-gray-800">Challenges</h2>
+
+        <div class="filters">
+          <div>
+            <label for="filterDifficulty">Filter By Difficulty:</label>
+            <select id="filterDifficulty">
+              <option value="all">All</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div>
+            <label for="filterStatus">Filter By Status:</label>
+            <select id="filterStatus">
+              <option value="all">All</option>
+              <option value="available">Available</option>
+              <option value="in-progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Challenges List -->
+        <div id="challengesList">
+          <!-- Challenges will be dynamically populated here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Sample challenge data
+    const challengesData = [
+      { title: "Python Code Golf", description: "Write the shortest Python code to solve a problem.", difficulty: "easy", points: 50, status: "available", link: "#" },
+      { title: "Java Algorithm Challenge", description: "Optimize a sorting algorithm.", difficulty: "medium", points: 100, status: "in-progress", link: "#" },
+      { title: "React Portfolio", description: "Build a portfolio site with React.", difficulty: "hard", points: 200, status: "available", link: "#" },
+      { title: "Flutter Game Dev", description: "Create a simple game using Flutter.", difficulty: "medium", points: 150, status: "available", link: "#" },
+      { title: "MySQL Query Master", description: "Solve complex database queries.", difficulty: "hard", points: 180, status: "completed", link: "#" },
+      { title: "AWS Deployment", description: "Deploy an app on AWS.", difficulty: "medium", points: 120, status: "in-progress", link: "#" },
+      { title: "Python Data Analysis", description: "Analyze a dataset with Python.", difficulty: "easy", points: 60, status: "completed", link: "#" }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const challengesList = document.getElementById('challengesList');
+      const filterDifficultySelect = document.getElementById('filterDifficulty');
+      const filterStatusSelect = document.getElementById('filterStatus');
+      const searchInput = document.getElementById('searchInput');
+
+      let filteredChallenges = [...challengesData];
+
+      function renderChallenges() {
+        challengesList.innerHTML = '';
+        filteredChallenges.forEach((challenge, index) => {
+          const challengeCard = document.createElement('div');
+          challengeCard.className = 'challenge-card';
+          challengeCard.style.animationDelay = `${index * 0.1}s`;
+          challengeCard.innerHTML = `
+                        <div>
+                            <h3>${challenge.title}</h3>
+                            <p>${challenge.description}</p>
+                            <p><span class="difficulty ${challenge.difficulty}">${challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1)}</span> - ${challenge.points} Points</p>
+                            <p class="status ${challenge.status}">
+                                <i class="${challenge.status === 'completed' ? 'fas fa-check-circle' : challenge.status === 'in-progress' ? 'fas fa-spinner' : 'fas fa-star'}"></i>
+                                ${challenge.status.replace('-', ' ').charAt(0).toUpperCase() + challenge.status.slice(1).replace('-', ' ')}
+                            </p>
+                        </div>
+                        <a href="${challenge.link}" class="action-btn ${challenge.status === 'completed' ? 'completed' : challenge.status === 'in-progress' ? 'progress' : 'participate'}">
+                            ${challenge.status === 'completed' ? 'View Results' : challenge.status === 'in-progress' ? 'Continue' : 'Participate'}
+                        </a>
+                    `;
+          challengesList.appendChild(challengeCard);
+        });
+      }
+
+      function filterChallenges() {
+        const difficulty = filterDifficultySelect.value;
+        const status = filterStatusSelect.value;
+
+        filteredChallenges = challengesData.filter(challenge => {
+          const difficultyMatch = difficulty === 'all' || challenge.difficulty === difficulty;
+          const statusMatch = status === 'all' || challenge.status === status;
+          return difficultyMatch && statusMatch;
+        });
+
+        renderChallenges();
+      }
+
+      filterDifficultySelect.addEventListener('change', filterChallenges);
+      filterStatusSelect.addEventListener('change', filterChallenges);
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        filteredChallenges = challengesData.filter(challenge => {
+          const title = challenge.title.toLowerCase();
+          const description = challenge.description.toLowerCase();
+          return title.includes(query) || description.includes(query);
+        });
+        renderChallenges();
+      });
+
+      renderChallenges();
+    });
+  </script>
+</body>
+
+</html>

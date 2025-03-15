@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .dark-mode {
+            background-color: #1a202c;
+            color: white;
+        }
+
+
+        /* Style for the tab buttons */
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+        }
+
+
+        .tab-button.active {
+            background-color: #6B46C1;
+            color: white;
+        }
+
+
+        /* Style for the chat interface */
+        .chat-interface {
+            display: none;
+        }
+
+
+        .chat-interface.active {
+            display: block;
+        }
+    </style>
+</head>
+
+
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-200 min-h-screen p-5">
+            <img src="../../Img/icons/cataylyst.png" alt="Catalyst Logo" class="h-8 mb-5"
+                style="display: block; margin: 0 auto; height: 3rem;">
+            <ul class="mt-5 space-y-3">
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="teacher_db.html" class="flex items-center w-full">
+                        <i class="fas fa-home mr-2"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="students.html" class="flex items-center w-full">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="classes.html" class="flex items-center w-full">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        <span>Classes</span>
+                    </a>
+                </li>
+                <li class="bg-purple-400 text-white p-3 rounded-lg flex items-center">
+                    <a href="support.html" class="flex items-center w-full">
+                        <i class="fas fa-question-circle mr-2"></i>
+                        <span>Support</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="chatbot.html" class="flex items-center w-full">
+                        <i class="fas fa-robot mr-2"></i>
+                        <span>Chatbot</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="settings.html" class="flex items-center w-full">
+                        <i class="fas fa-cog mr-2"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="staff_room.html" class="flex items-center w-full">
+                        <i class="fas fa-comments mr-2"></i>
+                        <span>Staff Room</span>
+                    </a>
+                </li>
+                <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center">
+                    <a href="../index.html" class="flex items-center w-full">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 p-5">
+            <header class="flex justify-between items-center mb-5">
+                <div class="flex items-center w-1/3 bg-white p-2 rounded">
+                    <i class="fas fa-search text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search Class, Documents, Activities..."
+                        class="p-1 border-none outline-none w-full">
+                </div>
+                <div class="flex items-center space-x-4" style="padding-right: 12px;">
+                    <i class="fas fa-sun text-gray-500"></i>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" id="darkModeToggle">
+                        <div
+                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600">
+                        </div>
+                    </label>
+                    <i class="fas fa-bell text-gray-500"></i>
+                    <i class="fas fa-cog text-gray-500"></i>
+                </div>
+            </header>
+
+
+            <div>
+                <h2 class="text-2xl font-semibold mb-4">Tickets</h2>
+                <div class="flex space-x-4 mb-4">
+                    <button id="unassigned-tab" class="tab-button active">Unassigned</button>
+                    <button id="assigned-to-me-tab" class="tab-button">Assigned to Me</button>
+                    <button id="solved-tab" class="tab-button">Solved</button>
+                </div>
+
+
+                <!-- Unassigned Tickets -->
+                <div id="unassigned-tickets" class="chat-interface active">
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Zoom meeting issue</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">Alice Johnson</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 11 December 2023</span>
+                            <span class="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">Unassigned</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">My zoom meeting is not starting. Please help!</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Cannot submit assignment</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">Bob Williams</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 11 December 2023</span>
+                            <span class="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">Unassigned</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">I am unable to submit my assignment. The submit button is not
+                            working.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Forgot Password</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">Charlie Brown</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 10 December 2023</span>
+                            <span class="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">Unassigned</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">I forgot my password and can't log in. Please reset it for me.</p>
+                    </div>
+                </div>
+
+
+                <!-- Assigned to Me Chat Interface -->
+                <div id="assigned-to-me" class="chat-interface">
+                    <div class="flex flex-col h-screen">
+                        <!-- Chat Header -->
+                        <div class="bg-white p-4 shadow">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-full bg-gray-200 mr-4">
+                                    <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold">Alice Johnson</h3>
+                                    <p class="text-sm text-gray-500">Student - Class A</p>
+                                </div>
+                                <button class="ml-auto text-purple-500 hover:text-purple-700">
+                                    <i class="fas fa-check"></i> Mark as Solved
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <!-- Chat Messages -->
+                        <div class="flex-1 overflow-y-auto p-4">
+                            <div class="flex flex-col space-y-2">
+                                <!-- Received Message -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 mr-2">
+                                        <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full">
+                                    </div>
+                                    <div class="bg-gray-100 rounded-xl p-2 max-w-xs">
+                                        Hi, I'm having trouble with the Zoom meeting. It's not starting.
+                                        <p class="text-xs text-gray-500 mt-1">9:30 AM</p>
+                                    </div>
+                                </div>
+                                <!-- Sent Message -->
+                                <div class="flex items-start self-end">
+                                    <div class="bg-purple-500 text-white rounded-xl p-2 max-w-xs">
+                                        Okay, I will help you with that. Have you checked your internet connection?
+                                        <p class="text-xs text-gray-100 mt-1">9:31 AM</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-purple-200 ml-2">
+                                        <img src="../Img/icons/user.png" alt="Admin Avatar" class="rounded-full">
+                                    </div>
+                                </div>
+                                <!-- Received Message -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 mr-2">
+                                        <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full">
+                                    </div>
+                                    <div class="bg-gray-100 rounded-xl p-2 max-w-xs">
+                                        Yes, my internet connection is working fine.
+                                        <p class="text-xs text-gray-500 mt-1">9:32 AM</p>
+                                    </div>
+                                </div>
+                                <!-- Sent Message -->
+                                <div class="flex items-start self-end">
+                                    <div class="bg-purple-500 text-white rounded-xl p-2 max-w-xs">
+                                        Can you please restart your Zoom application and try again?
+                                        <p class="text-xs text-gray-100 mt-1">9:31 AM</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-purple-200 ml-2">
+                                        <img src="../Img/icons/user.png" alt="Admin Avatar" class="rounded-full">
+                                    </div>
+                                </div>
+                                <!-- Received Message -->
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 mr-2">
+                                        <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full">
+                                    </div>
+                                    <div class="bg-gray-100 rounded-xl p-2 max-w-xs">
+                                        Okay, let me try that.
+                                        <p class="text-xs text-gray-500 mt-1">9:34 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Chat Input -->
+                        <div class="bg-gray-50 p-4">
+                            <div class="flex items-center">
+                                <input type="text" placeholder="Start typing here"
+                                    class="flex-1 border rounded-full py-2 px-3 outline-none">
+                                <button class="ml-2 p-2 bg-purple-500 text-white rounded-full">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Solved Tickets -->
+                <div id="solved-tickets" class="chat-interface">
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Network Connectivity Issues</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">David Lee</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 09 December 2023</span>
+                            <span class="ml-auto bg-green-500 text-white px-3 py-1 rounded-full text-sm">Solved on 12
+                                December
+                                2023</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">Experiencing frequent disconnections from the network. Please
+                            investigate.</p>
+                    </div>
+
+
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Printer Not Working</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">Eve Smith</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 08 December 2023</span>
+                            <span class="ml-auto bg-green-500 text-white px-3 py-1 rounded-full text-sm">Solved on 11
+                                December
+                                2023</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">The printer is not responding. I need to print some urgent
+                            documents.</p>
+                    </div>
+
+
+                    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <h3 class="text-lg font-semibold">Software Installation Failed</h3>
+                        <div class="flex items-center mt-2">
+                            <img src="../Img/icons/user.png" alt="User Avatar" class="rounded-full w-8 h-8 mr-2">
+                            <span class="text-gray-700">Frank Miller</span>
+                            <span class="ml-4 text-gray-500"><i class="far fa-calendar-alt"></i> 07 December 2023</span>
+                            <span class="ml-auto bg-green-500 text-white px-3 py-1 rounded-full text-sm">Solved on 10
+                                December
+                                2023</span>
+                        </div>
+                        <p class="mt-2 text-gray-600">I am unable to install the new software. Getting an error message.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const unassignedTab = document.getElementById('unassigned-tab');
+        const assignedToMeTab = document.getElementById('assigned-to-me-tab');
+        const solvedTab = document.getElementById('solved-tab');
+
+
+        const unassignedTickets = document.getElementById('unassigned-tickets');
+        const assignedToMeDiv = document.getElementById('assigned-to-me');
+        const solvedTickets = document.getElementById('solved-tickets');
+
+
+        function showUnassigned() {
+            unassignedTickets.classList.add('active');
+            assignedToMeDiv.classList.remove('active');
+            solvedTickets.classList.remove('active');
+
+
+            unassignedTab.classList.add('active');
+            assignedToMeTab.classList.remove('active');
+            solvedTab.classList.remove('active');
+        }
+
+
+        function showAssignedToMe() {
+            unassignedTickets.classList.remove('active');
+            assignedToMeDiv.classList.add('active');
+            solvedTickets.classList.remove('active');
+
+
+            unassignedTab.classList.remove('active');
+            assignedToMeTab.classList.add('active');
+            solvedTab.classList.remove('active');
+        }
+
+
+        function showSolved() {
+            unassignedTickets.classList.remove('active');
+            assignedToMeDiv.classList.remove('active');
+            solvedTickets.classList.add('active');
+
+
+            unassignedTab.classList.remove('active');
+            assignedToMeTab.classList.remove('active');
+            solvedTab.classList.add('active');
+        }
+
+
+        unassignedTab.addEventListener('click', function (event) {
+            event.preventDefault();
+            showUnassigned();
+        });
+
+
+        assignedToMeTab.addEventListener('click', function (event) {
+            event.preventDefault();
+            showAssignedToMe();
+        });
+
+
+        solvedTab.addEventListener('click', function (event) {
+            event.preventDefault();
+            showSolved();
+        });
+
+
+        // Show Unassigned tickets by default
+        showUnassigned();
+    </script>
+</body>
+
+
+</html>

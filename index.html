@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script src="script.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        /* Add some basic styling for the dropdown */
+        .role-select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="login-section">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Please enter your credentials to continue</p>
+
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <!-- Role Selection Dropdown -->
+                <label for="role" style="display: block; margin-bottom: 10px;">Choose your role:</label>
+                <select id="role" class="role-select">
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                </select>
+
+
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" placeholder="Username" autocomplete="username">
+                    <span class="input-status"></span>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Password" autocomplete="current-password">
+                    <span class="input-status"></span>
+                </div>
+
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+
+                <button type="submit" class="login-btn">
+                    <span>Login Now</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+
+            <p class="login-others-title"><strong>Login with Others</strong></p>
+
+
+            <div class="social-login">
+                <button class="google">
+                    <img src="Img/icons/google.png" alt="Google">
+                    <span>Login with <strong>Google</strong></span>
+                </button>
+                <button class="facebook">
+                    <img src="Img/icons/facebook.png" alt="Facebook">
+                    <span>Login with <strong>Facebook</strong></span>
+                </button>
+            </div>
+
+
+            <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+        </div>
+
+
+        <!-- Right Side Design with Graphics -->
+        <div class="right-design">
+
+
+            <img src="Img/login.jpg" alt="Illustration" class="graphic">
+        </div>
+    </div>
+
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+
+            const role = document.getElementById('role').value;
+
+
+            // Redirect based on the selected role
+            if (role === 'teacher') {
+                window.location.href = "/Teacher DB/teacher_db.html"; // Replace with the actual teacher page URL
+            } else if (role === 'student') {
+                window.location.href = '/Student DB/student_db.html'; // Replace with the actual student page URL 
+            } else {
+                alert('Please choose a role before logging in.');
+            }
+        }
+    </script>
+</body>
+
+
+</html>

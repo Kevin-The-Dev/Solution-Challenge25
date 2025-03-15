@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .dark-mode {
+            background-color: #1a202c;
+            color: white;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .bg-gray-100 {
+            background-color: #1a202c;
+        }
+
+        .dark-mode .bg-purple-100 {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .bg-gray-200 {
+            background-color: #4a5568;
+        }
+
+        .dark-mode .text-gray-600 {
+            color: #a0aec0;
+        }
+
+        .dark-mode .text-gray-500 {
+            color: #a0aec0;
+        }
+
+        .dark-mode .bg-gray-300 {
+            background-color: #4a5568;
+        }
+
+        .dark-mode .hover\:bg-gray-400:hover {
+            background-color: #718096;
+        }
+
+        /* Custom styles for the new sections */
+        .attendance-chart-container {
+            position: relative;
+            height: 200px;
+        }
+
+        .staff-room-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .staff-room-message .initials {
+            width: 40px;
+            height: 40px;
+            background-color: #6B46C1;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .document-item i {
+            color: #6B46C1;
+        }
+
+        /* Icon styles */
+        .header-icon {
+            color: #6B46C1;
+            margin-right: 0.5rem;
+        }
+
+        .action-icon {
+            margin-right: 0.5rem;
+        }
+
+        .status-active {
+            color: #2ecc71;
+        }
+
+        .status-inactive {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-200 min-h-screen p-5">
+            <img src="../../Img/icons/cataylyst.png" alt="Catalyst Logo" class="h-8 mb-5"
+                style="display: block; margin: 0 auto; height: 3rem;" aria-label="Catalyst Logo">
+            <ul class="mt-5 space-y-3">
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="teacher_db.html" class="flex items-center w-full">
+                        <i class="fas fa-home mr-2"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="bg-purple-400 text-white p-3 rounded-lg flex items-center">
+                    <a href="students.html" class="flex items-center w-full">
+                        <i class="fas fa-graduation-cap mr-2"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="classes.html" class="flex items-center w-full">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        <span>Classes</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="support.html" class="flex items-center w-full">
+                        <i class="fas fa-question-circle mr-2"></i>
+                        <span>Support</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="chatbot.html" class="flex items-center w-full">
+                        <i class="fas fa-robot mr-2"></i>
+                        <span>Chatbot</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="settings.html" class="flex items-center w-full">
+                        <i class="fas fa-cog mr-2"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="p-3 rounded-lg hover:bg-purple-300 cursor-pointer flex items-center">
+                    <a href="staff_room.html" class="flex items-center w-full">
+                        <i class="fas fa-comments mr-2"></i>
+                        <span>Staff Room</span>
+                    </a>
+                </li>
+                <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center">
+                    <a href="../index.html" class="flex items-center w-full">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 p-5 bg-purple-100">
+            <header class="flex justify-between items-center mb-5">
+                <div class="flex items-center w-1/3 bg-white p-2 rounded">
+                    <i class="fas fa-search text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search Class, Documents, Activities..."
+                        class="p-1 border-none outline-none w-full" aria-label="Search">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-sun text-gray-500"></i>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" id="darkModeToggle">
+                        <div
+                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600">
+                        </div>
+                    </label>
+                    <i class="fas fa-bell text-gray-500"></i>
+                    <i class="fas fa-cog text-gray-500"></i>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-3 gap-4 mb-5">
+                <div class="bg-white p-5 rounded-lg shadow flex items-center justify-center">
+                    <i class="fas fa-book text-orange-500 mr-2"></i>
+                    <span>Courses</span>
+                    <span class="ml-auto font-bold">5</span>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow flex items-center justify-center">
+                    <i class="fas fa-chalkboard-teacher text-green-500 mr-2"></i>
+                    <span>Classes</span>
+                    <span class="ml-auto font-bold">7</span>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>
+                    <span>Students</span>
+                    <span class="ml-auto font-bold">120</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end mb-5">
+                <div class="relative inline-block text-left">
+                    <div>
+                        <button type="button"
+                            class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            id="menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
+                            <img src="../../Img/icons/het.jpg" alt="User Avatar" class="rounded-full w-8 h-8 mr-2"
+                                style="object-fit: cover; border: 2px solid #6B46C1; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease-in-out;"
+                                onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                            Het Patel
+                            <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Dropdown Menu -->
+                    <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        id="menu" style="display: none; z-index: 1000;">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                <i class="fas fa-user mr-2"></i> Switch to Kevin
+                                <img src="../../Img/icons/het.jpg" alt="Kevin Avatar" class="rounded-full w-5 h-5 ml-2 inline-block"
+                                    style="vertical-align: middle;">
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                <i class="fas fa-user mr-2"></i> Switch to Tarnija
+                                <img src="../../Img/icons/girl.jpg" alt="Tarnija Avatar" class="rounded-full w-5 h-5 ml-2 inline-block"
+                                    style="vertical-align: middle;">
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                <i class="fas fa-user mr-2"></i> Switch to Kaustubh
+                                <img src="../../Img/icons/het.jpg" alt="Kaustubh Avatar" class="rounded-full w-5 h-5 ml-2 inline-block"
+                                    style="vertical-align: middle;">
+                            </a>
+                            <a href="sign_out.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100" role="menuitem">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow mb-5">
+                <div class="flex justify-between">
+                    <button onclick="addStudent()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded flex items-center">
+                        <i class="fas fa-user-plus mr-2"></i> Add Student
+                    </button>
+                    <button onclick="uploadStudents()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex items-center">
+                        <i class="fas fa-upload mr-2"></i> Upload Students
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-lg shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-graduation-cap header-icon"></i> Registered Students
+                    </h3>
+                    <div>
+                        <label for="entries" class="mr-2">Show</label>
+                        <select id="entries" class="border rounded p-1" onchange="changeEntries(this.value)">
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                        <span class="ml-2">entries</span>
+                    </div>
+                </div>
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-id-card header-icon"></i> Admission No.
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-user header-icon"></i> Name
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-chalkboard header-icon"></i> Class
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-venus-mars header-icon"></i> Gender
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-map-marker-alt header-icon"></i> State
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-info-circle header-icon"></i> Status
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <i class="fas fa-toggle-on header-icon"></i> Active
+                            </th>
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/18/COM/0001
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Aryan Patel
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS1
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Male
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Gujarat
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/19/SCI/0012
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Diya Sharma
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS2
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Female
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Maharashtra
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/20/COM/0234
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Rohan Verma
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS3
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Male
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Delhi
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-times-circle status-inactive mr-1"></i> Inactive
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/21/ART/0345
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Ananya Kapoor
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                SSS1
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Female
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Karnataka
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/22/MED/0456
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Vikram Singh
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                SSS2
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Male
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Punjab
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/23/ENG/0567
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Lakshmi Menon
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                SSS3
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Female
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Kerala
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/24/ACC/0678
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Rajesh Kumar
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS1
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Male
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Tamil Nadu
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-times-circle status-inactive mr-1"></i> Inactive
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/25/MKT/0789
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Priya Gupta
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS2
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Female
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Haryana
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/26/HRM/0890
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Saurav Joshi
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                JSS3
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Male
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Uttarakhand
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                CST/27/FIN/0901
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Meera Nair
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                SSS1
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Female
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                Goa
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <span class="flex items-center">
+                                    <i class="fas fa-check-circle status-active mr-1"></i> Active
+                                </span>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <input type="checkbox" checked>
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="#" class="text-blue-500 hover:text-blue-700" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="#" class="text-green-500 hover:text-green-700" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-500 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="flex justify-between items-center mt-3">
+                    <div class="text-sm text-gray-700">
+                        Showing 1 to 10 of 120 entries
+                    </div>
+                    <div>
+                        <button onclick="prevPage()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button onclick="nextPage()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function () {
+            document.body.classList.toggle('dark-mode', this.checked);
+            localStorage.setItem('darkMode', this.checked ? 'enabled' : 'disabled');
+        });
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+
+        function toggleDropdown() {
+            const menu = document.getElementById('menu');
+            const button = document.getElementById('menu-button');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+                button.setAttribute('aria-expanded', 'false');
+            } else {
+                menu.style.display = 'block';
+                button.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const menu = document.getElementById('menu');
+            const button = document.getElementById('menu-button');
+            if (!button.contains(event.target) && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        function addStudent() {
+            alert('Add Student functionality is under development.');
+        }
+
+        function uploadStudents() {
+            alert('Upload Students functionality is under development.');
+        }
+
+        function changeEntries(value) {
+            alert('Show ' + value + ' entries functionality is under development.');
+        }
+
+        function prevPage() {
+            alert('Previous page functionality is under development.');
+        }
+
+        function nextPage() {
+            alert('Next page functionality is under development.');
+        }
+    </script>
+</body>
+
+</html>

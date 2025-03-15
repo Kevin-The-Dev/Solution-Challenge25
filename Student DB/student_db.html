@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 16rem;
+            background: linear-gradient(135deg, #6B46C1, #4c1d95);
+            color: white;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar img {
+            height: 3rem;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .sidebar ul {
+            margin-top: 1.5rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+            margin: 0 0.5rem;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background-color: #ffffff;
+            color: #6B46C1;
+        }
+
+        .sidebar-item a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            color: inherit;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .sidebar-item i {
+            margin-right: 0.75rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            background-color: #f7fafc;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #6B46C1, #a78bfa);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .header .search-bar {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .header .search-bar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .header .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        .header .search-bar input::placeholder {
+            color: #e2e8f0;
+        }
+
+        .summary-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .summary-card i {
+            color: #6B46C1;
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .summary-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .summary-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .chart-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: 350px; /* Fixed height for charts */
+            position: relative;
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .calendar-card,
+        .task-card {
+            background: linear-gradient(135deg, #ffffff, #f7fafc);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .lesson-schedule {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .lesson-schedule .day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lesson-schedule .day:hover {
+            background-color: #e2e8f0;
+            transform: scale(1.1);
+        }
+
+        .lesson-schedule .day.active {
+            background: linear-gradient(135deg, #6B46C1, #a78bfa);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .lesson-schedule .day span:first-child {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .lesson-schedule .day span:last-child {
+            font-size: 0.75rem;
+        }
+
+        .assignment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.3s;
+        }
+
+        .assignment-item:hover {
+            background-color: #f7fafc;
+        }
+
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+
+        .assignment-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            accent-color: #6B46C1;
+        }
+
+        .assignment-item .time {
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+    <aside class="sidebar p-5">
+        <img src="/Img/icons/cataylyst.png" alt="Catalyst Logo">
+        <ul class="space-y-3">
+            <li class="sidebar-item active ">
+                <a href="student_db.html">
+                    <i class="fas fa-home"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="sidebar-item ">
+                <a href="subjects.html">
+                    <i class="fas fa-book"></i>
+                    <span>Subjects</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="lessons.html">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Lessons</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="assessments.html">
+                    <i class="fas fa-tasks"></i>
+                    <span>Assessments</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="challenges.html">
+                    <i class="fas fa-star"></i>
+                    <span>Challenges</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="support.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="upload.html">
+                    <i class="fas fa-upload"></i>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="download.html">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </a>
+            </li>
+            <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center" >
+                <a href="../index.html" class="flex items-center w-full">
+                    <i class="fas fa-sign-out-alt mr-2" style="padding-left : 9px;"></i>
+                    <span style="padding-left : 9px;">Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+          <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search text-white mr-2"></i>
+                    <input type="text" id="searchInput" placeholder="Search ..." aria-label="Search lessons">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button aria-label="Toggle Theme" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button aria-label="Notifications" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button aria-label="Settings" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="summary-card">
+                    <h3><i class="fas fa-tasks"></i> Pending Assessment</h3>
+                    <p>3</p>
+                </div>
+                <div class="summary-card">
+                    <h3><i class="fas fa-check-circle"></i> Completed</h3>
+                    <p>15</p>
+                </div>
+                <div class="summary-card">
+                    <h3><i class="fas fa-star"></i> Quiz Score</h3>
+                    <p>92</p>
+                </div>
+                <div class="summary-card">
+                    <h3><i class="fas fa-book-open"></i> Lessons Left</h3>
+                    <p>2</p>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Progress Chart -->
+                <div class="col-span-2 chart-container">
+                    <h3 class="text-lg font-semibold mb-3">Course Progress</h3>
+                    <canvas id="progressChart"></canvas>
+                </div>
+
+                <!-- Point Progress -->
+                <div class="chart-container">
+                    <h3 class="text-lg font-semibold mb-3">Point Progress</h3>
+                    <canvas id="pointChart"></canvas>
+                </div>
+
+                <!-- Calendar and Task List -->
+                <div class="col-span-1 space-y-6">
+                    <!-- Calendar -->
+                    <div class="calendar-card">
+                        <div class="calendar-header">
+                            <h3>March 2025</h3>
+                        </div>
+                        <div class="lesson-schedule">
+                            <div class="day active">
+                                <span>M</span>
+                                <span>15</span>
+                            </div>
+                            <div class="day">
+                                <span>T</span>
+                                <span>16</span>
+                            </div>
+                            <div class="day">
+                                <span>W</span>
+                                <span>17</span>
+                            </div>
+                            <div class="day">
+                                <span>T</span>
+                                <span>18</span>
+                            </div>
+                            <div class="day">
+                                <span>F</span>
+                                <span>19</span>
+                            </div>
+                            <div class="day">
+                                <span>S</span>
+                                <span>20</span>
+                            </div>
+                            <div class="day">
+                                <span>S</span>
+                                <span>21</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task List -->
+                    <div class="task-card">
+                        <h3 class="text-lg font-semibold mb-3">Task List</h3>
+                        <div class="assignments">
+                            <div class="assignment-item">
+                                <div>
+                                    <input type="checkbox">
+                                    <span>Programming 1</span>
+                                </div>
+                                <span class="time">08:00 AM</span>
+                            </div>
+                            <div class="assignment-item">
+                                <div>
+                                    <input type="checkbox">
+                                    <span>craft Science chp 3</span>
+                                </div>
+                                <span class="time">08:00 AM</span>
+                            </div>
+                            <div class="assignment-item">
+                                <div>
+                                    <input type="checkbox">
+                                    <span>Hello world</span>
+                                </div>
+                                <span class="time">08:00 AM</span>
+                            </div>
+                            <div class="assignment-item">
+                                <div>
+                                    <input type="checkbox">
+                                    <span>Assignment 2</span>
+                                </div>
+                                <span class="time">02:40 PM</span>
+                            </div>
+                            <div class="assignment-item">
+                                <div>
+                                    <input type="checkbox" checked>
+                                    <span>Assignment-45</span>
+                                </div>
+                                <span class="time">04:50 PM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Ensure the DOM is fully loaded before initializing charts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Chart.js for Course Progress
+            const progressCtx = document.getElementById('progressChart').getContext('2d');
+            new Chart(progressCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Math', 'Science', 'History', 'English', 'Art'],
+                    datasets: [{
+                        label: 'Progress',
+                        data: [75, 60, 45, 90, 80],
+                        backgroundColor: 'rgba(107, 70, 193, 0.8)',
+                        borderColor: '#4c1d95',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                },
+                                color: '#6B7280'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#6B7280'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#6B7280'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart.js for Point Progress
+            const pointCtx = document.getElementById('pointChart').getContext('2d');
+            new Chart(pointCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Earned', 'Remaining'],
+                    datasets: [{
+                        label: 'Points',
+                        data: [70, 30],
+                        backgroundColor: ['#6B46C1', '#e2e8f0'],
+                        borderColor: ['#4c1d95', '#d1d5db'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#6B7280'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += Math.round(context.parsed) + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

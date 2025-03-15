@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student's Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+        }
+
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+
+        .sidebar {
+            width: 16rem;
+            background: linear-gradient(135deg, #6B46C1, #4c1d95);
+            color: white;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+
+        .sidebar img {
+            height: 3rem;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+
+        .sidebar ul {
+            margin-top: 1.5rem;
+            padding: 0;
+            list-style: none;
+        }
+
+
+        .sidebar-item {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s, transform 0.2s;
+            margin: 0 0.5rem;
+        }
+
+
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+
+        .sidebar-item.active {
+            background-color: #ffffff;
+            color: #6B46C1;
+        }
+
+
+        .sidebar-item a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            color: inherit;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+
+        .sidebar-item i {
+            margin-right: 0.75rem;
+        }
+
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            background-color: #f7fafc;
+            color: #1f2937;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #6B46C1, #a78bfa);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .header .search-bar {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+
+        .header .search-bar input {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            outline: none;
+            width: 150px;
+            transition: color 0.3s;
+        }
+
+
+        .header .search-bar input::placeholder {
+            color: #e2e8f0;
+        }
+
+
+        .subject-card {
+            background-color: #fff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 1rem;
+        }
+
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .subject-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.75rem;
+        }
+
+
+        .subject-card p {
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+
+        .subject-card .progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+
+        .subject-card .progress-bar {
+            width: 70%;
+            height: 0.75rem;
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+
+        .subject-card .progress-bar-inner {
+            height: 100%;
+            background-color: #6B46C1;
+            width: 0%;
+            transition: width 0.4s ease-in-out;
+        }
+
+
+        .subject-card .progress-percentage {
+            font-weight: 600;
+            color: #6B46C1;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="main-container">
+    <!-- Sidebar -->
+    <aside class="sidebar p-5">
+        <img src="/Img/icons/cataylyst.png" alt="Catalyst Logo">
+        <ul class="space-y-3">
+            <li class="sidebar-item ">
+                <a href="student_db.html">
+                    <i class="fas fa-home"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="sidebar-item active">
+                <a href="subjects.html">
+                    <i class="fas fa-book"></i>
+                    <span>Subjects</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="lessons.html">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Lessons</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="assessments.html">
+                    <i class="fas fa-tasks"></i>
+                    <span>Assessments</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="challenges.html">
+                    <i class="fas fa-star"></i>
+                    <span>Challenges</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="support.html">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="upload.html">
+                    <i class="fas fa-upload"></i>
+                    <span>Uploads</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="download.html">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </a>
+            </li>
+            <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center" >
+                <a href="../index.html" class="flex items-center w-full">
+                    <i class="fas fa-sign-out-alt mr-2" style="padding-left : 9px;"></i>
+                    <span style="padding-left : 9px;">Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search text-white mr-2"></i>
+                    <input type="text" id="searchInput" placeholder="Search Subjects..." aria-label="Search lessons">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button aria-label="Toggle Theme" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    <button aria-label="Notifications" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button aria-label="Settings" class="text-white text-xl hover:text-gray-200">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div>
+                <h2 class="text-2xl font-semibold mb-4">Subjects</h2>
+
+
+                <!-- Subject Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="subject-card">
+                        <h3>Introduction to Python Programming</h3>
+                        <p>Teacher: Ms. Anderson</p>
+                        <p>Next Assessment: Quiz on March 22, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 75%;"></div>
+                            </div>
+                            <span class="progress-percentage">75%</span>
+                        </div>
+                    </div>
+
+
+                    <div class="subject-card">
+                        <h3>Data Structures and Algorithms in Java</h3>
+                        <p>Teacher: Mr. Smith</p>
+                        <p>Next Assessment: Assignment due on March 29, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 40%;"></div>
+                            </div>
+                            <span class="progress-percentage">40%</span>
+                        </div>
+                    </div>
+
+
+                    <div class="subject-card">
+                        <h3>Web Development with React</h3>
+                        <p>Teacher: Ms. Clark</p>
+                        <p>Next Assessment: Project Presentation on April 5, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 90%;"></div>
+                            </div>
+                            <span class="progress-percentage">90%</span>
+                        </div>
+                    </div>
+
+
+                    <div class="subject-card">
+                        <h3>Mobile App Development with Flutter</h3>
+                        <p>Teacher: Mr. Davis</p>
+                        <p>Next Assessment: Midterm Exam on April 12, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 60%;"></div>
+                            </div>
+                            <span class="progress-percentage">60%</span>
+                        </div>
+                    </div>
+
+
+                    <div class="subject-card">
+                        <h3>Database Management with MySQL</h3>
+                        <p>Teacher: Ms. Wilson</p>
+                        <p>Next Assessment: Lab Assignment due on April 19, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 80%;"></div>
+                            </div>
+                            <span class="progress-percentage">80%</span>
+                        </div>
+                    </div>
+
+
+                    <div class="subject-card">
+                        <h3>Cloud Computing with AWS</h3>
+                        <p>Teacher: Mr. Garcia</p>
+                        <p>Next Assessment: Case Study due on April 26, 2025</p>
+                        <div class="progress">
+                            <span>Progress:</span>
+                            <div class="progress-bar">
+                                <div class="progress-bar-inner" style="width: 50%;"></div>
+                            </div>
+                            <span class="progress-percentage">50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+
+</html>

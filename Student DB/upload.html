@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student's Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --primary-color: #6B46C1;
+      --primary-hover: #4c1d95;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --info-color: #3B82F6;
+      --text-color: #1f2937;
+      --muted-text: #6B7280;
+      --bg-light: #f7fafc;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6;
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 16rem;
+      background: linear-gradient(135deg, #6B46C1, #4c1d95);
+      color: white;
+      overflow-y: auto;
+      scrollbar-width: none;
+      transition: width 0.3s ease;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sidebar img {
+      height: 3rem;
+      margin: 1.5rem auto;
+      display: block;
+    }
+
+    .sidebar ul {
+      margin-top: 1.5rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sidebar-item {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      margin: 0 0.5rem;
+    }
+
+    .sidebar-item:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .sidebar-item.active {
+      background-color: #ffffff;
+      color: #6B46C1;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-item a {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      color: inherit;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .sidebar-item i {
+      margin-right: 0.75rem;
+    }
+
+    .content {
+      flex: 1;
+      padding: 2rem;
+      background-color: var(--bg-light);
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(107, 70, 193, 0.9), rgba(167, 139, 250, 0.9));
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-bar {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      width: 300px;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-bar:hover,
+    .search-bar:focus-within {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .search-bar input {
+      background: none;
+      border: none;
+      color: white;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .search-bar input::placeholder {
+      color: #e2e8f0;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filters label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    .filters select {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      background-color: white;
+      color: var(--text-color);
+      transition: border-color 0.3s ease;
+    }
+
+    .filters select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(107, 70, 193, 0.2);
+    }
+
+    .upload-area,
+    .uploads-table {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .drop-area {
+      border: 2px dashed var(--primary-color);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .drop-area.dragover {
+      background-color: #e2e8f0;
+      border-color: var(--primary-hover);
+    }
+
+    .drop-area i {
+      font-size: 2.5rem;
+      color: var(--muted-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-area p {
+      color: var(--muted-text);
+      margin: 0.5rem 0;
+    }
+
+    .upload-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .upload-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .upload-entry {
+      display: grid;
+      grid-template-columns: 3fr 2fr 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .upload-entry:last-child {
+      border-bottom: none;
+    }
+
+    .upload-entry:hover {
+      background-color: #f1f5f9;
+    }
+
+    .upload-details h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    .upload-details p {
+      color: var(--muted-text);
+      font-size: 0.95rem;
+      margin: 0.25rem 0 0;
+    }
+
+    .upload-status {
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .upload-status.uploaded {
+      color: var(--success-color);
+    }
+
+    .upload-status.pending {
+      color: var(--warning-color);
+    }
+
+    .upload-status i {
+      margin-right: 0.5rem;
+    }
+
+    .review-details {
+      font-size: 0.9rem;
+      color: var(--info-color);
+    }
+
+    .download-link {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+      text-align: center;
+    }
+
+    .download-link:hover {
+      background-color: var(--primary-hover);
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+ <!-- Sidebar -->
+ <aside class="sidebar p-5">
+    <img src="/Img/icons/cataylyst.png" alt="Catalyst Logo">
+    <ul class="space-y-3">
+        <li class="sidebar-item ">
+            <a href="student_db.html">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="student_db.html">
+                <i class="fas fa-book"></i>
+                <span>Subjects</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="lessons.html">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Lessons</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="assessments.html">
+                <i class="fas fa-tasks"></i>
+                <span>Assessments</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="challenges.html">
+                <i class="fas fa-star"></i>
+                <span>Challenges</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="support.html">
+                <i class="fas fa-question-circle"></i>
+                <span>Support</span>
+            </a>
+        </li>
+        <li class="sidebar-item active">
+            <a href="upload.html">
+                <i class="fas fa-upload"></i>
+                <span>Uploads</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="download.html">
+                <i class="fas fa-download"></i>
+                <span>Download</span>
+            </a>
+        </li>
+        <li class="text-red-500 mt-5 p-3 rounded-lg hover:bg-red-200 cursor-pointer flex items-center" >
+            <a href="../index.html" class="flex items-center w-full">
+                <i class="fas fa-sign-out-alt mr-2" style="padding-left : 9px;"></i>
+                <span style="padding-left : 9px;">Sign Out</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+
+
+    <!-- Main Content -->
+    <section class="content">
+      <header class="header">
+        <div class="search-bar">
+          <i class="fas fa-search text-white mr-2"></i>
+          <input type="text" id="searchInput" placeholder="Search Uploads..." aria-label="Search uploads">
+        </div>
+        <div class="flex items-center space-x-4">
+          <button aria-label="Toggle Theme" class="text-white text-xl hover:text-gray-200"><i
+              class="fas fa-sun"></i></button>
+          <button aria-label="Notifications" class="text-white text-xl hover:text-gray-200"><i
+              class="fas fa-bell"></i></button>
+          <button aria-label="Settings" class="text-white text-xl hover:text-gray-200"><i
+              class="fas fa-cog"></i></button>
+        </div>
+      </header>
+
+      <h2 class="text-3xl font-bold mb-6 text-gray-800">Uploads</h2>
+
+      <!-- Upload Area -->
+      <div class="upload-area">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Upload Files</h3>
+        <div class="drop-area" id="dropArea">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Drag and drop files here or click to browse</p>
+          <p>Supported formats: PDF, DOCX, JPG, PNG (Max 10MB)</p>
+          <input type="file" id="fileInput" multiple accept=".pdf,.docx,.jpg,.png" style="display: none;">
+        </div>
+        <button class="upload-btn" id="uploadBtn">Upload Files</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="uploads-table">
+        <div class="filters">
+          <div>
+            <label for="statusFilter">Filter by Status:</label>
+            <select id="statusFilter">
+              <option value="all">All</option>
+              <option value="uploaded">Uploaded</option>
+              <option value="pending">Pending Review</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">Uploaded Files</h3>
+        <div id="uploadsContainer">
+          <!-- Upload entries will be dynamically added here -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Built-in example files
+    const initialFiles = [
+      { name: "Python_Assignment1.pdf", date: "2025-03-10", size: "2.34", status: "uploaded", review: "Good effort, needs more comments", teacher: "Ms. Smith", grade: "85" },
+      { name: "Java_Code_Challenge.docx", date: "2025-03-12", size: "1.89", status: "uploaded", review: "Excellent code quality!", teacher: "Mr. Johnson", grade: "92" },
+      { name: "React_Project_Presentation.pdf", date: "2025-03-14", size: "4.56", status: "pending", review: "No review yet", teacher: "", grade: "" },
+      { name: "Flutter_App_Screenshot.jpg", date: "2025-03-15", size: "0.78", status: "uploaded", review: "Great UI design!", teacher: "Ms. Davis", grade: "90" },
+      { name: "MySQL_Database_Diagram.png", date: "2025-03-13", size: "1.23", status: "uploaded", review: "Well-structured database schema", teacher: "Mr. Wilson", grade: "88" }
+    ];
+
+    let uploadedFiles = [...initialFiles];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropArea = document.getElementById('dropArea');
+      const fileInput = document.getElementById('fileInput');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const uploadsContainer = document.getElementById('uploadsContainer');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+
+      // Initialize with example files
+      renderFiles();
+
+      // Trigger file input on drop area click
+      dropArea.addEventListener('click', () => fileInput.click());
+
+      // Drag and drop events
+      dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('dragover');
+      });
+
+      dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+
+      dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('dragover');
+        processFiles(e.dataTransfer.files);
+      });
+
+      // File input change event
+      fileInput.addEventListener('change', () => processFiles(fileInput.files));
+
+      // Upload button click event
+      uploadBtn.addEventListener('click', () => {
+        if (fileInput.files.length > 0) {
+          processFiles(fileInput.files);
+          fileInput.value = ''; // Clear input
+        } else {
+          alert('Please select files to upload.');
+        }
+      });
+
+      // Process uploaded files
+      function processFiles(files) {
+        Array.from(files).forEach(file => {
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          if (sizeMB > 10) {
+            alert(`${file.name} exceeds the 10MB limit.`);
+            return;
+          }
+
+          const fileData = {
+            name: file.name,
+            date: new Date().toLocaleDateString(),
+            size: sizeMB,
+            status: 'pending',
+            review: 'No review yet',
+            teacher: '',
+            grade: ''
+          };
+
+          uploadedFiles.push(fileData);
+          renderFiles();
+        });
+      }
+
+      // Display file in list
+      function displayFile(file, delay = 0) {
+        const uploadEntry = document.createElement('div');
+        uploadEntry.className = 'upload-entry';
+        uploadEntry.style.animationDelay = `${delay}s`;
+        uploadEntry.innerHTML = `
+                    <div class="upload-details">
+                        <h3>${file.name}</h3>
+                        <p>Date: ${file.date} | Size: ${file.size} MB</p>
+                        <p class="upload-status ${file.status}">
+                            <i class="${file.status === 'uploaded' ? 'fas fa-check-circle' : 'fas fa-hourglass-half'}"></i>
+                            ${file.status.charAt(0).toUpperCase() + file.status.slice(1)}
+                        </p>
+                    </div>
+                    <div class="review-details">
+                        <p>${file.review}</p>
+                        ${file.teacher ? `<p>Teacher: ${file.teacher} | Grade: ${file.grade}</p>` : ''}
+                    </div>
+                    <a href="#" class="download-link">Download</a>
+                `;
+        uploadsContainer.appendChild(uploadEntry);
+      }
+
+      // Render files based on filter
+      function renderFiles() {
+        const filterValue = statusFilter.value;
+        uploadsContainer.innerHTML = ''; // Clear existing content
+
+        const filteredFiles = filterValue === 'all' ? uploadedFiles : uploadedFiles.filter(file => file.status === filterValue);
+
+        filteredFiles.forEach((file, index) => {
+          displayFile(file, index * 0.1);
+        });
+      }
+
+      // Search filter
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const entries = uploadsContainer.querySelectorAll('.upload-entry');
+        entries.forEach(entry => {
+          const name = entry.querySelector('h3').textContent.toLowerCase();
+          entry.style.display = name.includes(query) ? 'grid' : 'none';
+        });
+      });
+
+      // Status filter
+      statusFilter.addEventListener('change', renderFiles);
+    });
+  </script>
+</body>
+
+</html>
