@@ -4,7 +4,7 @@ load_dotenv()
 import os
 import google.generativeai as genai
 
-genai.configure(api_key=os.environ["AIzaSyBMi_YlMSsxvQI5l2AmE0uL00um7EIy3As"])
+genai.configure(api_key=os.environ["AIzaSyBOVINvSND0SRDOpj1Jr7ezXcxpp_jXWSk"])
 
 # Modified settings for question generation
 # - Lower temperature for more consistent, structured output
