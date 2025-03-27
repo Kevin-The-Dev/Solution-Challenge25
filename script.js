@@ -1,17 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Sample credentials (in a real app, this would be handled server-side)
     const validUsername = "user";
-    const validPassword = "password";
+    const validPassword = "12345";
    
-  
-    // Get DOM elements
+    // Rest of your code remains exactly the same...
     const loginForm = document.getElementById("login-form");
     const usernameInput = document.querySelector("input[type='text']");
     const passwordInput = document.querySelector("input[type='password']");
     const loginBtn = document.querySelector(".login-btn");
     const rememberCheckbox = document.getElementById("remember");
-    const roleSelect = document.getElementById('role'); // Get the role select element
-   
+    const roleSelect = document.getElementById('role');
   
     // Check if there are saved credentials
     checkSavedCredentials();
