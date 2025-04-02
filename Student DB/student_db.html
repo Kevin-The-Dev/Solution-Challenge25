@@ -194,6 +194,8 @@
             border-radius: 1rem;
             padding: 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .calendar-header {
@@ -311,6 +313,11 @@
             .chart-container {
                 height: 300px;
             }
+
+            .calendar-card, .task-card {
+                padding: 1rem;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            }
         }
 
         @media (max-width: 640px) {
@@ -338,6 +345,12 @@
 
             .chart-container {
                 height: 250px;
+            }
+
+            .calendar-card, .task-card {
+                padding: 0.75rem;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                border-radius: 0.75rem;
             }
         }
     </style>
@@ -373,15 +386,12 @@
                         <span>Assessments</span>
                     </a>
                 </li>
-                
-        <li class="sidebar-item">
-            <a href="https://academic-ai.streamlit.app/" class="flex items-center w-full" target="_blank">
-              <i class="fas fa-robot mr-2"></i>
-              <span>Academic Chatbot</span>
-            </a>
-          </li>
-  
-          
+                <li class="sidebar-item">
+                    <a href="https://academic-ai.streamlit.app/" class="flex items-center w-full" target="_blank">
+                        <i class="fas fa-robot mr-2"></i>
+                        <span>Academic Chatbot</span>
+                    </a>
+                </li>
                 <li class="sidebar-item">
                     <a href="challenges.html">
                         <i class="fas fa-star"></i>
