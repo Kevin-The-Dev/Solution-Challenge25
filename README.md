@@ -139,5 +139,3 @@ Solution-Challenge25/
 - Add support for more languages and subjects.
 - Integrate with popular LMS platforms like Moodle.
 
-### Contributing
-Contributions are welcome! Fork the repo, create a branch, and submit a pull request with your enhancements.
