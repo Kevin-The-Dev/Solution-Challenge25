@@ -42,13 +42,16 @@ Catalysts is an AI-driven platform that:
 
 ---
 
+## File Structure
+
+```plaintext
 Solution-Challenge25/
-├── .vscode/                 # VS Code settings
+├── .vscode/                  # VS Code settings
 │   └── settings.json
-├── Img/                     # Image assets
-│   ├── icons/              # Icon files
-│   └── login.jpg           # Login page screenshot
-├── Student DB/              # Student-facing HTML pages
+├── Img/                      # Image assets
+│   ├── icons/               # Icon files
+│   └── login.jpg            # Login page screenshot
+├── Student DB/               # Student-facing HTML pages
 │   ├── assessments.html
 │   ├── challenges.html
 │   ├── download.html
@@ -57,8 +60,8 @@ Solution-Challenge25/
 │   ├── subjects.html
 │   ├── support.html
 │   └── upload.html
-├── Teacher DB/              # Teacher-facing HTML pages
-│   ├── assets/             # Additional assets for teacher pages
+├── Teacher DB/               # Teacher-facing HTML pages
+│   ├── assets/              # Additional assets for teacher pages
 │   ├── chatbot.html
 │   ├── classes.html
 │   ├── settings.html
@@ -66,19 +69,18 @@ Solution-Challenge25/
 │   ├── students.html
 │   ├── support.html
 │   └── teacher_db.html
-├── chatbot/                 # Chatbot and AI components
+├── chatbot/                  # Chatbot and AI components
 │   └── all_codes-master/
-│       ├── auto_grader/    # Auto-grading scripts
-│       ├── qpm_bot/        # Question paper generation bot
+│       ├── auto_grader/     # Auto-grading scripts
+│       ├── qpm_bot/         # Question paper generation bot
 │       └── student_chatbot/ # Student-facing chatbot
-├── output/                  # Output files
-│   └── kevin.exe           # Executable file (if applicable)
-├── README.md                # Project README
-├── index.html               # Main entry point
-├── script.js                # JavaScript logic
-└── styles.css               # CSS styling
-
-
+├── output/                   # Output files
+│   └── kevin.exe            # Executable file (if applicable)
+├── README.md                 # Project README
+├── index.html                # Main entry point
+├── script.js                 # JavaScript logic
+└── styles.css                # CSS styling
+```
 
 ---
 
@@ -103,36 +105,39 @@ Solution-Challenge25/
    ```bash
    git clone https://github.com/Kevin-The-Dev/Solution-Challenge25.git
    cd Solution-Challenge25
-Install dependencies (if applicable, e.g., for Python scripts):
+   ```
+2. Install dependencies (if applicable, e.g., for Python scripts):
+    ```bash
+   pip install -r requirements.txt
+   ```
+   (Note: Add a requirements.txt file if Python dependencies are used.)
 
-pip install -r requirements.txt
-(Note: Add a requirements.txt file if Python dependencies are used.)
-Serve the frontend: Open index.html in a browser for static testing, or use a local server:
 
-npx live-server
-Running the AI Components Navigate to the chatbot folder:
 
-cd chatbot/all_codes-master
-Run the auto-grader or chatbot scripts (e.g., with Python):
+### Running the AI Components
+1. Navigate to the chatbot folder
+ ```bash
+   cd chatbot/all_codes-master
+   ```
+2. Run the auto-grader or chatbot scripts (e.g., with Python):
+ ```bash
+   python auto_grader/main.py
+   ```
 
-python auto_grader/main.py
-Demo
-Live MVP: https://cataylyst.netlify.app/
-Demo Video: https://youtu.be/-dIS8nyI8fY
-GitHub Repository: https://github.com/Kevin-The-Dev/Solution-Challenge25
-Team
-Team Name: Catalysts
-Team Leader: Tarnija Malaviya
-Future Scope
-Enhance offline capabilities with local AI models.
-Add support for more languages and subjects.
-Integrate with popular LMS platforms like Moodle.
-Contributing
+### Demo
+- Live MVP: https://cataylyst.netlify.app/
+- Demo Video: https://youtu.be/-dIS8nyI8fY
+- GitHub Repository: https://github.com/Kevin-The-Dev/Solution-Challenge25
+
+### Team
+- Team Name: Catalysts
+- Team Leader: Tarnija Malaviya
+- Members: Kevin Patel, Kaustubh Upadhyay, Het Patel 
+
+### Future Scope
+- Enhance offline capabilities with local AI models.
+- Add support for more languages and subjects.
+- Integrate with popular LMS platforms like Moodle.
+
+### Contributing
 Contributions are welcome! Fork the repo, create a branch, and submit a pull request with your enhancements.
-
-License
-(Note: Add a LICENSE file to the repo if applicable.)
-
-Built with passion for Solution Challenge 25 by Team Catalysts.
-
-
